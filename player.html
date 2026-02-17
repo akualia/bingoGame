@@ -1,372 +1,402 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-<meta charset="UTF-8">
-<title>Bingo Game</title>
+    <meta charset="UTF-8">
+    <title>Bingo Game</title>
 
-<style>
+    <style>
+        body {
+            background: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
 
-body{
-    background:#0f172a;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    margin:0;
-    font-family:sans-serif;
-}
+        /* container */
+        #container {
+            position: relative;
+        }
 
-/* container */
-#container{
-    position:relative;
-}
+        /* board auto scale */
+        #board {
 
-/* board auto scale */
-#board{
+            --size: 95vmin;
+            --gap: 0;
 
-    --size:95vmin;
-    --gap:0;
+            width: var(--size);
+            height: var(--size);
 
-    width:var(--size);
-    height:var(--size);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
 
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    grid-template-rows:repeat(5,1fr);
+            gap: var(--gap);
+            position: relative;
+        }
 
-    gap:var(--gap);
-    position:relative;
-}
+        /* cell */
+        .cell {
 
-/* cell */
-.cell{
+            background: none;
+            border: none;
+            border-radius: 0;
 
-    background:none;
-    border:none;
-    border-radius:0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    cursor:pointer;
-    position:relative;
-}
+            cursor: pointer;
+            position: relative;
+        }
 
 
-/* BIGGER IMAGE */
-.cell img{
+        /* BIGGER IMAGE */
+        .cell img {
 
-    width:92%;
-    height:92%;
-    object-fit:contain;
-}
+            width: 92%;
+            height: 92%;
+            object-fit: contain;
+        }
 
-/* circle mark */
-.cell.marked::after{
+        /* circle mark */
+        .cell.marked::after {
 
-    content:"";
+            content: "";
 
-    position:absolute;
+            position: absolute;
 
-    width:85%;
-    height:85%;
+            width: 85%;
+            height: 85%;
 
-    border:.8vmin solid #ff3b3b;
-    border-radius:50%;
+            border: .8vmin solid #ff3b3b;
+            border-radius: 50%;
 
-    animation:pop .25s ease;
-}
+            animation: pop .25s ease;
+        }
 
-@keyframes pop{
+        @keyframes pop {
 
-    from{
-        transform:scale(0);
-        opacity:0;
-    }
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
 
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-/* bingo line */
-.line{
+        /* bingo line */
+        .line {
 
-    position:absolute;
-    background:#22c55e;
+            position: absolute;
+            background: #22c55e;
 
-    height:1.2vmin;
+            height: 1.2vmin;
 
-    border-radius:1vmin;
+            border-radius: 1vmin;
 
-    transform-origin:left center;
+            transform-origin: left center;
 
-    animation:draw .4s ease forwards;
-}
+            animation: draw .4s ease forwards;
+        }
 
-@keyframes draw{
-    from{ width:0; }
-}
+        @keyframes draw {
+            from {
+                width: 0;
+            }
+        }
 
-/* FULLSCREEN BINGO OVERLAY */
-#overlay{
+        /* FULLSCREEN BINGO OVERLAY */
+        #overlay {
 
-    position:fixed;
-    inset:0;
+            position: fixed;
+            inset: 0;
 
-    background:rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-    opacity:0;
-    pointer-events:none;
+            opacity: 0;
+            pointer-events: none;
 
-    transition:.4s;
-}
+            transition: .4s;
+        }
 
-#overlay.show{
+        #overlay.show {
 
-    opacity:1;
-    pointer-events:all;
-}
+            opacity: 1;
+            pointer-events: all;
+        }
 
-#bingoText{
+        #bingoText {
 
-    color:#22c55e;
+            color: #22c55e;
 
-    font-size:15vmin;
-    font-weight:bold;
+            font-size: 15vmin;
+            font-weight: bold;
 
-    animation:zoom .6s ease, glow 1s infinite alternate;
-}
+            animation: zoom .6s ease, glow 1s infinite alternate;
+        }
 
-@keyframes zoom{
+        @keyframes zoom {
 
-    from{
-        transform:scale(0.3);
-        opacity:0;
-    }
+            from {
+                transform: scale(0.3);
+                opacity: 0;
+            }
 
-    to{
-        transform:scale(1);
-        opacity:1;
-    }
-}
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-@keyframes glow{
+        @keyframes glow {
 
-    from{
-        text-shadow:0 0 10px #22c55e;
-    }
+            from {
+                text-shadow: 0 0 10px #22c55e;
+            }
 
-    to{
-        text-shadow:
-        0 0 20px #22c55e,
-        0 0 40px #22c55e;
-    }
-}
-
-</style>
+            to {
+                text-shadow:
+                    0 0 20px #22c55e,
+                    0 0 40px #22c55e;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<div id="container">
-    <div id="board"></div>
-</div>
+    <div id="container">
+        <div id="board"></div>
+    </div>
 
-<div id="overlay">
-    <div id="bingoText">BINGO</div>
-</div>
+    <div id="overlay">
+        <div id="bingoText">BINGO</div>
+    </div>
 
-<audio id="winSound" src="win.mp3"></audio>
+    <audio id="winSound" src="win.mp3"></audio>
 
-<script>
+    <script>
 
-const SIZE = 5
-const TOTAL_IMAGES = 36
+        const SIZE = 5
+        const TOTAL_IMAGES = 36
 
-let bingoAchieved = false
+        let bingoAchieved = false
 
-const board = document.getElementById("board")
-const overlay = document.getElementById("overlay")
-const winSound = document.getElementById("winSound")
+        const board = document.getElementById("board")
+        const overlay = document.getElementById("overlay")
+        const winSound = document.getElementById("winSound")
 
-let grid = []
+        let grid = []
 
-/* shuffle */
-let numbers = []
+        /* shuffle */
+        let numbers = []
 
-for(let i=1;i<=TOTAL_IMAGES;i++)
-    numbers.push(i)
+        for (let i = 1; i <= TOTAL_IMAGES; i++)
+            numbers.push(i)
 
-numbers.sort(()=>Math.random()-0.5)
+        numbers.sort(() => Math.random() - 0.5)
 
-let index=0
+        let index = 0
 
-/* build board */
-for(let r=0;r<SIZE;r++){
+        /* build board */
+        for (let r = 0; r < SIZE; r++) {
 
-    grid[r]=[]
+            grid[r] = []
 
-    for(let c=0;c<SIZE;c++){
+            for (let c = 0; c < SIZE; c++) {
 
-        const cell=document.createElement("div")
-        cell.className="cell"
+                const cell = document.createElement("div")
+                cell.className = "cell"
 
-        if(r===2 && c===2){
+                if (r === 2 && c === 2) {
 
-            cell.classList.add("marked")
+                    cell.classList.add("marked")
 
-            const txt=document.createElement("div")
-            txt.style.color="#22c55e"
-            txt.style.fontSize="5vmin"
-            txt.innerText="FREE"
+                    const txt = document.createElement("div")
+                    txt.style.color = "#22c55e"
+                    txt.style.fontSize = "5vmin"
+                    txt.innerText = "FREE"
 
-            cell.appendChild(txt)
+                    cell.appendChild(txt)
 
-            grid[r][c]=1
+                    grid[r][c] = 1
+                }
+                else {
+
+                    const img = document.createElement("img")
+                    img.src = `${numbers[index++]}.png`
+
+                    cell.appendChild(img)
+
+                    grid[r][c] = 0
+                }
+
+                cell.onclick = () => mark(cell, r, c)
+
+                board.appendChild(cell)
+            }
         }
-        else{
+            function resetBingoState() {
 
-            const img=document.createElement("img")
-            img.src=`${numbers[index++]}.png`
+                bingoAchieved = false
 
-            cell.appendChild(img)
+                document.querySelectorAll(".line").forEach(e => e.remove())
 
-            grid[r][c]=0
+                bingoText.classList.remove("show")
+            }
+
+            /* mark */
+            function mark(cell, r, c) {
+
+                if (bingoAchieved) {
+
+                    // allow unmark but reset bingo state
+                    if (grid[r][c] === 1 && !(r === 2 && c === 2)) {
+
+                        grid[r][c] = 0
+                        cell.classList.remove("marked")
+
+                        resetBingoState()
+                    }
+
+                    return
+                }
+
+                if (grid[r][c] === 1) {
+
+                    if (r === 2 && c === 2) return
+
+                    grid[r][c] = 0
+                    cell.classList.remove("marked")
+
+                    return
+                }
+
+                grid[r][c] = 1
+                cell.classList.add("marked")
+
+                checkBingo()
+            }
+
+        /* check bingo */
+        function checkBingo() {
+
+            for (let r = 0; r < SIZE; r++) {
+
+                if (grid[r].every(v => v === 1)) {
+
+                    drawLine("row", r)
+                    bingo()
+                    return
+                }
+            }
+
+            for (let c = 0; c < SIZE; c++) {
+
+                let win = true
+
+                for (let r = 0; r < SIZE; r++)
+                    if (grid[r][c] === 0) win = false
+
+                if (win) {
+
+                    drawLine("col", c)
+                    bingo()
+                    return
+                }
+            }
+
+            let win = true
+
+            for (let i = 0; i < SIZE; i++)
+                if (grid[i][i] === 0) win = false
+
+            if (win) {
+
+                drawLine("diag1")
+                bingo()
+                return
+            }
+
+            win = true
+
+            for (let i = 0; i < SIZE; i++)
+                if (grid[i][SIZE - 1 - i] === 0) win = false
+
+            if (win) {
+
+                drawLine("diag2")
+                bingo()
+            }
         }
 
-        cell.onclick=()=>mark(cell,r,c)
+        /* bingo trigger */
+        function bingo() {
 
-        board.appendChild(cell)
-    }
-}
+            bingoAchieved = true
 
-/* mark */
-function mark(cell,r,c){
+            overlay.classList.add("show")
 
-    if(bingoAchieved) return
-
-    if(grid[r][c]===1) return
-
-    grid[r][c]=1
-
-    cell.classList.add("marked")
-
-    checkBingo()
-}
-
-/* check bingo */
-function checkBingo(){
-
-    for(let r=0;r<SIZE;r++){
-
-        if(grid[r].every(v=>v===1)){
-
-            drawLine("row",r)
-            bingo()
-            return
+            winSound.currentTime = 0
+            winSound.play()
         }
-    }
 
-    for(let c=0;c<SIZE;c++){
+        /* draw line */
+        function drawLine(type, index) {
 
-        let win=true
+            const line = document.createElement("div")
+            line.className = "line"
 
-        for(let r=0;r<SIZE;r++)
-            if(grid[r][c]===0) win=false
+            const size = board.clientWidth
+            const cell = size / SIZE
 
-        if(win){
+            if (type === "row") {
 
-            drawLine("col",c)
-            bingo()
-            return
+                line.style.width = size + "px"
+                line.style.top = (index * cell + cell / 2) + "px"
+                line.style.left = "0"
+            }
+
+            if (type === "col") {
+
+                line.style.width = size + "px"
+                line.style.top = "0"
+                line.style.left = (index * cell + cell / 2) + "px"
+                line.style.transform = "rotate(90deg)"
+            }
+
+            if (type === "diag1") {
+
+                line.style.width = (size * 1.4) + "px"
+                line.style.top = "0"
+                line.style.left = "0"
+                line.style.transform = "rotate(45deg)"
+            }
+
+            if (type === "diag2") {
+
+                line.style.width = (size * 1.4) + "px"
+                line.style.top = size + "px"
+                line.style.left = "0"
+                line.style.transform = "rotate(-45deg)"
+            }
+
+            board.appendChild(line)
         }
-    }
 
-    let win=true
-
-    for(let i=0;i<SIZE;i++)
-        if(grid[i][i]===0) win=false
-
-    if(win){
-
-        drawLine("diag1")
-        bingo()
-        return
-    }
-
-    win=true
-
-    for(let i=0;i<SIZE;i++)
-        if(grid[i][SIZE-1-i]===0) win=false
-
-    if(win){
-
-        drawLine("diag2")
-        bingo()
-    }
-}
-
-/* bingo trigger */
-function bingo(){
-
-    bingoAchieved = true
-
-    overlay.classList.add("show")
-
-    winSound.currentTime=0
-    winSound.play()
-}
-
-/* draw line */
-function drawLine(type,index){
-
-    const line=document.createElement("div")
-    line.className="line"
-
-    const size = board.clientWidth
-    const cell = size / SIZE
-
-    if(type==="row"){
-
-        line.style.width=size+"px"
-        line.style.top=(index*cell + cell/2)+"px"
-        line.style.left="0"
-    }
-
-    if(type==="col"){
-
-        line.style.width=size+"px"
-        line.style.top="0"
-        line.style.left=(index*cell + cell/2)+"px"
-        line.style.transform="rotate(90deg)"
-    }
-
-    if(type==="diag1"){
-
-        line.style.width=(size*1.4)+"px"
-        line.style.top="0"
-        line.style.left="0"
-        line.style.transform="rotate(45deg)"
-    }
-
-    if(type==="diag2"){
-
-        line.style.width=(size*1.4)+"px"
-        line.style.top=size+"px"
-        line.style.left="0"
-        line.style.transform="rotate(-45deg)"
-    }
-
-    board.appendChild(line)
-}
-
-</script>
+    </script>
 
 </body>
+
 </html>
