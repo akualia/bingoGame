@@ -3,17 +3,18 @@
 
 <head>
 <meta charset="UTF-8">
-<title>Bingo</title>
+<title>Bingo Fullscreen</title>
 
 <style>
 body{
     margin:0;
+    padding:0;
     background:black;
-    font-family:Arial;
-    overflow:hidden;
+    font-family: Arial, sans-serif;
+    overflow:hidden; /* ป้องกันการ scroll */
 }
 
-/* minimal buttons container */
+/* ปุ่มควบคุมแบบลอยทับ */
 .controls{
     position:fixed;
     top:10px;
@@ -23,21 +24,16 @@ body{
     z-index:999;
 }
 
-/* minimal button style */
 .controls button{
-    background:rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.2);
     color:white;
-    border:1px solid rgba(255,255,255,0.2);
-    padding:6px 12px;
-    font-size:20px;
+    border:1px solid rgba(255,255,255,0.4);
+    padding:10px 15px;
+    font-size:24px;
     cursor:pointer;
+    border-radius: 4px;
 }
 
-.controls button:hover{
-    background:rgba(255,255,255,0.18);
-}
-
-/* container */
 .container{
     width:100vw;
     height:100vh;
@@ -46,75 +42,75 @@ body{
     align-items:center;
 }
 
-/* grid auto scale - คงเดิมทุกประการ */
+/* ปรับ Grid ให้เต็ม 100% ของหน้าจอทุกฝั่ง */
 .grid{
     display:grid;
     grid-template-columns:repeat(6,1fr);
     grid-template-rows:repeat(6,1fr);
-    width:95vmin;
-    height:95vmin;
-    gap:0.8vmin;
+    width:100vw; 
+    height:100vh;
+    gap:2px; /* ช่องไฟเล็กน้อยเพื่อให้เห็นขอบช่อง */
 }
 
 .cell{
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:6vmin;
-    font-weight:bold;
+    /* ตัวเลขใหญ่ยักษ์ ปรับตามขนาดความกว้างหน้าจอ */
+    font-size:12vmin; 
+    font-weight:900;
     cursor:pointer;
     position:relative;
+    user-select: none;
+    overflow: hidden;
 }
 
+/* สีพื้นหลัง */
 .color1{background:#800040;color:white;}
 .color2{background:#b30000;color:white;}
 .color3{background:#e6bf3a;color:white;}
 .color4{background:#dddddd;color:black;}
 
+/* รูปภาพในช่อง */
 .cell img{
     position:absolute;
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:cover; /* ให้ภาพเต็มช่องพอดี */
     display:none;
 }
 
-.cell.open img{
-    display:block;
-}
+.cell.open img{ display:block; }
+.cell.open span{ display:none; }
 
-.cell.open span{
-    display:none;
-}
-
-/* --- ส่วนที่เพิ่ม: Pop-up Fullscreen --- */
+/* Pop-up Fullscreen */
 .popup-overlay {
-    display: none; /* ปิดไว้ก่อน */
+    display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0,0,0,1); /* ดำสนิท */
     z-index: 10000;
     justify-content: center;
     align-items: center;
 }
 
 .popup-content {
-    max-width: 90%;
-    max-height: 90%;
-    border: 3px solid white;
-    box-shadow: 0 0 30px rgba(255,255,255,0.3);
+    width: 100%;  /* รูปใหญ่เต็มจอ */
+    height: 100%;
+    object-fit: contain; /* รักษาอัตราส่วนภาพไว้ แต่ขยายใหญ่สุด */
 }
 
 .close-btn {
     position: absolute;
-    top: 20px;
-    right: 30px;
+    top: 10px;
+    right: 25px;
     color: white;
-    font-size: 50px;
+    font-size: 80px; /* ปุ่มปิดใหญ่ๆ */
     font-weight: bold;
     cursor: pointer;
-    line-height: 1;
+    z-index: 10001;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 </style>
 </head>
@@ -127,7 +123,7 @@ body{
 </div>
 
 <div class="container">
-    <div class="grid" id="grid"></div>
+    <div id="grid" class="grid"></div>
 </div>
 
 <div id="popup" class="popup-overlay" onclick="closePopup()">
@@ -136,7 +132,6 @@ body{
 </div>
 
 <script>
-
 let grid=document.getElementById("grid");
 let popup = document.getElementById("popup");
 let popupImg = document.getElementById("popup-img");
@@ -155,31 +150,26 @@ function shuffle(array){
     }
 }
 
-// ฟังก์ชันเปิด Pop-up
 function openPopup(src) {
     popupImg.src = src;
     popup.style.display = "flex";
 }
 
-// ฟังก์ชันปิด Pop-up
 function closePopup() {
     popup.style.display = "none";
+    popupImg.src = "";
 }
 
 function createBoard(){
-
     grid.innerHTML="";
-
     let images=[];
-    for(let i=1;i<=36;i++)
-        images.push(i+".png");
+    for(let i=1;i<=36;i++) images.push(i+".png");
 
     shuffle(images);
 
     let colors=["color1","color2","color3","color4"];
 
     for(let i=1;i<=36;i++){
-
         let cell=document.createElement("div");
         cell.className="cell "+colors[(i-1)%4];
 
@@ -189,13 +179,10 @@ function createBoard(){
         let img=document.createElement("img");
         img.src=images[i-1];
 
-        // แก้ไข Logic การคลิก
         cell.onclick=()=>{
             if(!cell.classList.contains("open")) {
-                // ถ้ายังไม่เปิด ให้เปิดรูปในช่อง
                 cell.classList.add("open");
             } else {
-                // ถ้าเปิดอยู่แล้ว ให้ Pop-up เต็มหน้าจอ
                 openPopup(img.src);
             }
         };
@@ -211,7 +198,6 @@ function resetBoard(){
 }
 
 createBoard();
-
 </script>
 
 </body>
