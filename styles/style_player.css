@@ -1,0 +1,126 @@
+body {
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+#container {
+    position: relative;
+}
+
+#board {
+    --size: 95vmin;
+    --gap: 0;
+    width: var(--size);
+    height: var(--size);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: var(--gap);
+    position: relative;
+}
+
+.cell {
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.cell img {
+    width: 92%;
+    height: 92%;
+    object-fit: contain;
+}
+
+.cell.marked::after {
+    content: "";
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    border: .8vmin solid #ff3b3b;
+    border-radius: 50%;
+    animation: pop .25s ease;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.line {
+    position: absolute;
+    background: #22c55e;
+    height: 1.2vmin;
+    border-radius: 1vmin;
+    transform-origin: left center;
+    animation: draw .4s ease forwards;
+    z-index: 10;
+}
+
+@keyframes draw {
+    from {
+        width: 0;
+    }
+}
+
+#overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: .4s;
+    z-index: 100;
+}
+
+#overlay.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+#bingoText {
+    color: #22c55e;
+    font-size: 15vmin;
+    font-weight: bold;
+    animation: zoom .6s ease, glow 1s infinite alternate;
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px #22c55e;
+    }
+
+    to {
+        text-shadow: 0 0 20px #22c55e, 0 0 40px #22c55e;
+    }
+}

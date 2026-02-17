@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bingo - Admin</title>
+    <link rel="stylesheet" href="../styles/style_index.css">
+</head>
+
+<body>
+    <div class="controls">
+        <button onclick="resetBoard()" title="Reset">↻</button>
+        <button onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+    </div>
+    <div class="container">
+        <div id="grid" class="grid"></div>
+    </div>
+    <div id="popup" class="popup-overlay" onclick="closePopup()">
+        <span class="close-btn">&times;</span>
+        <img id="popup-img" class="popup-content">
+    </div>
+    <script src="../scripts/script_index.js"></script>
+</body>
+
+</html>
